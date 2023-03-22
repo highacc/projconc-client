@@ -11,17 +11,17 @@ async function fetchData (input: RequestInfo, init?: RequestInit) {
         throw Error(errorMessage);
     }
 
-}
+};
 
 export async function fetchNotes(): Promise<Note[]> {
     const response = await fetchData(`/api/notes`, {method: "GET"});
     return response.json();
-}
+};
 
 export interface NoteInput {
     title: string,
     text?: string,
-}
+};
 
 export async function createNote(note: NoteInput): Promise<Note> {
     const response = await fetchData(`/api/notes`, 
@@ -33,4 +33,10 @@ export async function createNote(note: NoteInput): Promise<Note> {
         body: JSON.stringify(note),
     });
     return response.json();
-}
+};
+
+export async function deleteNote(noteId: string) {
+    await fetchData("/api/notes/" + noteId, {
+        method: "DELETE"
+    })
+};
