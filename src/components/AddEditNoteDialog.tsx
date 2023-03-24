@@ -1,9 +1,9 @@
 import { Button, Form, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import {Note} from "../models/note";
+import { Note } from "../models/note";
 import { NoteInput } from "../network/notes_api";
 import * as NotesApi from "../network/notes_api";
-
+import TextInputField from "./form/TextInputField";
 
 interface AddEditNoteDialogProps {
     noteToEdit?: Note,
@@ -11,11 +11,9 @@ interface AddEditNoteDialogProps {
     onNoteSaved: (note: Note) => void,
 }
 
+const AddEditNoteDialog = ({ noteToEdit, onDismiss, onNoteSaved }: AddEditNoteDialogProps) => {
 
-
-const AddEditNoteDialog = ({noteToEdit, onDismiss, onNoteSaved}: AddEditNoteDialogProps) => {
-
-    const {register, handleSubmit, formState: {errors, isSubmitting}} = useForm<NoteInput>({
+    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<NoteInput>({
         defaultValues: {
             title: noteToEdit?.title || "",
             text: noteToEdit?.text || "",
@@ -37,53 +35,49 @@ const AddEditNoteDialog = ({noteToEdit, onDismiss, onNoteSaved}: AddEditNoteDial
         }
     }
 
-    return ( 
+    return (
         <Modal show onHide={onDismiss}>
             <Modal.Header closeButton>
-                <Modal.Title>{noteToEdit ? "Edit Task" : "Add Task"}</Modal.Title>
-            </Modal.Header>  
+                <Modal.Title>
+                    {noteToEdit ? "Edit note" : "Add note"}
+                </Modal.Title>
+            </Modal.Header>
 
             <Modal.Body>
-                <Form id="addEditNoteForm" onSubmit = {handleSubmit(onSubmit)}>
-                    <Form.Group className= "mb-3">
-                        <Form.Label>Title</Form.Label>
-                        <Form.Control
+                <Form id="addEditNoteForm" onSubmit={handleSubmit(onSubmit)}>
+                    <TextInputField
+                        name="title"
+                        label="Title"
                         type="text"
                         placeholder="Title"
-                        isInvalid={!!errors.title}
-                        {...register("title", { required: "Required" })}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                            {errors.title?.message}
-                        </Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group className= "mb-3">
-                        <Form.Label>Description</Form.Label>
-                        <Form.Control
+                        register={register}
+                        registerOptions={{ required: "Required" }}
+                        error={errors.title}
+                    />
+
+                    <TextInputField
+                        name="text"
+                        label="Text"
                         as="textarea"
                         rows={5}
-                        placeholder="Description"
-                        {...register("text")}
-                        />
-                        
-                    </Form.Group>
+                        placeholder="Text"
+                        register={register}
+                    />
                 </Form>
             </Modal.Body>
 
             <Modal.Footer>
                 <Button
-                type="submit"
-                form="addEditNoteForm"
-                disabled={isSubmitting}
+                    type="submit"
+                    form="addEditNoteForm"
+                    disabled={isSubmitting}
                 >
                     Save
                 </Button>
             </Modal.Footer>
-
         </Modal>
-     );
+    );
 }
- 
-export default AddEditNoteDialog;
 
+export default AddEditNoteDialog;
 
